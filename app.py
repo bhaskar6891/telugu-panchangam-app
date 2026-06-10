@@ -69,10 +69,10 @@ st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", l
 # Load and encode your background image (Ensure 'background.jpg' is in your app directory)
 bg_image_encoded = get_base64_image("background.jpg")
 
-# CSS to implement the custom image background and style text for maximum readability
+# CSS Styling (Includes custom button formatting to look sharp on top of the image)
 st.markdown(f"""
 <style>
-    /* Set image background with a subtle dark overlay to keep UI elements legible */
+    /* Background settings */
     .stApp {{
         background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                     url("data:image/jpg;base64,{bg_image_encoded}");
@@ -81,25 +81,42 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
     
-    /* Global Text Styling: Set font family and switch primary prose to white for readability over the dark image */
+    /* Typography defaults */
     html, body, p, label, h3, .stMarkdown, span {{
         font-family: 'Georgia', 'Times New Roman', serif !important;
         color: #FFFFFF !important;
     }}
     
-    /* Input and Calendar component background rules */
+    /* Inputs */
     div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {{
         background-color: #F8F9FA !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
     }}
     
-    /* Style inner text fields inside input widgets so user entries remain visible */
     div[data-baseweb="input"] input {{
         color: #1A1A1A !important;
     }}
     
-    /* Metrics panel configuration: cleanup look with solid white card container */
+    /* Custom Styling for the Restored Primary Button */
+    div.stButton > button:first-child {{
+        background-color: #87CEEB !important;
+        color: #1A1A1A !important;
+        border: none !important;
+        font-weight: bold !important;
+        font-family: 'Georgia', serif !important;
+        padding: 10px 24px !important;
+        border-radius: 8px !important;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.3) !important;
+        transition: transform 0.1s ease;
+    }}
+    
+    div.stButton > button:first-child:hover {{
+        transform: scale(1.02);
+        background-color: #a3e2fa !important;
+    }}
+    
+    /* Metrics display */
     div[data-testid="stMetric"] {{
         background-color: #FFFFFF !important;
         padding: 15px !important;
@@ -108,12 +125,10 @@ st.markdown(f"""
         box-shadow: 3px 3px 15px rgba(0,0,0,0.3) !important;
     }}
     
-    /* Target metric elements selectively to enforce dark text inside the white blocks */
     div[data-testid="stMetricLabel"] > div, div[data-testid="stMetricValue"] > div {{
         color: #1A1A1A !important;
     }}
     
-    /* Clean background alignment inside native Expander UI element */
     .stExpander {{
         background-color: rgba(255, 255, 255, 0.15) !important;
         border-radius: 8px;
@@ -122,7 +137,7 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# Heading Banner with Sky Blue background
+# Heading Banner
 st.markdown("""
 <div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.35); margin-bottom: 25px;">
     <h1 style="color:#1A1A1A !important; font-family:'Georgia', serif; margin:0; font-size: 32px; font-weight: bold;">
@@ -146,19 +161,27 @@ selected_date = st.date_input(
     max_value=max_possible_date
 )
 
-# Execution happens instantly on date change
-jd = get_julian_date(selected_date)
-samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
+st.write("")
 
-st.markdown(f"### 📅 Results for {selected_date.strftime('%d %B, %Y')}")
+# Centered Layout structure for the Button
+left_col, mid_col, right_col = st.columns([1.2, 1, 1])
+with mid_col:
+    submit_button = st.button("Convert Date", type="primary")
 
-col1, col2 = st.columns(2)
-with col1:
-    st.metric(label="Telugu Year (Samvatsaram)", value=samvatsara)
-    st.metric(label="Telugu Month (Masam)", value=month)
-with col2:
-    st.metric(label="Lunar Phase (Paksham)", value=paksham)
-    st.metric(label="Tithi (Lunar Day)", value=tithi)
+# Calculations triggered explicitly by the button click
+if submit_button:
+    jd = get_julian_date(selected_date)
+    samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
+    
+    st.markdown(f"### 📅 Results for {selected_date.strftime('%d %B, %Y')}")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric(label="Telugu Year (Samvatsaram)", value=samvatsara)
+        st.metric(label="Telugu Month (Masam)", value=month)
+    with col2:
+        st.metric(label="Lunar Phase (Paksham)", value=paksham)
+        st.metric(label="Tithi (Lunar Day)", value=tithi)
 
 st.write("---")
 
