@@ -88,7 +88,7 @@ try:
 except FileNotFoundError:
     background_style = ".stApp { background-color: #FF9933; }"
 
-# Custom CSS styling with background image injected and absolute input text contrast overrides
+# Custom CSS styling with comprehensive fix for dropdown popups
 st.markdown(f"""
 <style>
     {background_style}
@@ -98,18 +98,34 @@ st.markdown(f"""
         color: #1A1A1A !important;
     }}
     
-    /* Lock structural container background for calendar components */
+    /* Input block static fields setup */
     div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {{
         background-color: #FFFFFF !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
     }}
     
-    /* FORCED CONTRAST: Explicit target for standard text and text layouts inside native form pickers */
     div[data-baseweb="input"] input, div[data-baseweb="select"] select, input[type="date"] {{
         color: #1A1A1A !important;
-        -webkit-text-fill-color: #1A1A1A !important; /* Forces system text rendering on iOS Safari/Chrome engine */
+        -webkit-text-fill-color: #1A1A1A !important;
         background-color: #FFFFFF !important;
+    }}
+    
+    /* CRITICAL FIX: Targets global dropdown portals used by BaseWeb calendars.
+       Forces pop-up background and grid days to match clear light parameters.
+    */
+    div[role="listbox"], 
+    div[data-baseweb="popover"] [role="grid"],
+    div[data-baseweb="calendar"] [role="gridcell"],
+    div[data-baseweb="calendar"] button {{
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+        -webkit-text-fill-color: #1A1A1A !important;
+    }}
+
+    /* Ensure specific day grid numbers don't turn invisible */
+    div[data-baseweb="calendar"] div {{
+        color: #1A1A1A !important;
     }}
     
     /* Input instruction text container styling */
