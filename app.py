@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime
 import math
 import streamlit as st
@@ -36,49 +37,85 @@ def get_julian_date(date_obj):
     return math.floor(365.25 * (year + 4716)) + math.floor(30.6001 * (month + 1)) + day + B - 1524.5
 
 def estimate_lunar_positions(jd, date_obj):
-    d = jd - 2451545.0
-    sun_long = (280.466 + 0.9856474 * d) % 360
-    moon_long = (218.316 + 13.176396 * d) % 360
-    tithi_index = min(max(math.floor(((moon_long - sun_long) % 360) / 12), 0), 29)
+    T = (jd - 2451545.0) / 36525.0
     
+    sun_long = (280.46646 + 36000.76983 * T + 0.0003032 * T**2) % 360
+    M_sun = (357.52911 + 35999.05029 * T - 0.0001537 * T**2) % 360
+    sun_apparent_long = (sun_long + 1.914602 * math.sin(math.radians(M_sun)) + 0.019993 * math.sin(math.radians(2 * M_sun))) % 360
+
+    moon_long = (218.31644 + 481267.88123 * T - 0.001133 * T**2) % 360
+    elongation = (moon_long - sun_apparent_long) % 360
+    
+    tithi_index = min(max(math.floor(elongation / 12), 0), 29)
+    paksham = "Shukla Paksham" if tithi_index < 15 else "Krishna Paksham"
+    
+    ayanamsa = 12.5 + 0.0130125 * (date_obj.year - 1900)
+    sidereal_sun_long = (sun_apparent_long - ayanamsa) % 360
+    
+    last_new_moon_elongation = elongation % 360
+    days_since_new_moon = last_new_moon_elongation / 12.19
+    sun_at_new_moon = (sidereal_sun_long - (days_since_new_moon * 0.9856)) % 360
+    month_idx = math.floor(sun_at_new_moon / 30) % 12
+
     shaka_year = date_obj.year - 78
-    if date_obj.month < 3 or (date_obj.month == 3 and date_obj.day < 20): 
+    if month_idx == 11 and date_obj.month == 3:  
         shaka_year -= 1
+
+    samvatsara_idx = (shaka_year - 3) % 60
     
-    return TELUGU_YEARS[(shaka_year - 1) % 60], TELUGU_MONTHS[(math.floor(sun_long / 30) - 11) % 12], ("Shukla Paksham" if tithi_index < 15 else "Krishna Paksham"), TELUGU_TITHIS[tithi_index]
+    return TELUGU_YEARS[samvatsara_idx], TELUGU_MONTHS[month_idx], paksham, TELUGU_TITHIS[tithi_index]
+
+# Helper function to encode local image to base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling
-st.markdown("""
+# Read local image and encode it
+try:
+    base64_image = get_base64_image("background.jpg")
+    background_style = f"""
+    .stApp {{
+        background-image: url("data:image/jpg;base64,{base64_image}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    """
+except FileNotFoundError:
+    # Fallback to standard color if image isn't in the same folder
+    background_style = ".stApp { background-color: #FF9933; }"
+
+# Custom CSS styling with background image injected
+st.markdown(f"""
 <style>
-    .stApp {
-        background-color: #FF9933;
-    }
+    {background_style}
     
-    html, body, [class*="css"], p, label, h3, .stMarkdown {
+    html, body, [class*="css"], p, label, h3, .stMarkdown {{
         font-family: 'Georgia', 'Times New Roman', serif !important;
         color: #1A1A1A !important;
-    }
+    }}
     
-    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {{
         background-color: #FFFFFF !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
-    }
+    }}
     
-    div[data-testid="stMetric"] {
+    div[data-testid="stMetric"] {{
         background-color: #FFFFFF !important;
         padding: 15px !important;
         border-radius: 10px !important;
         border-left: 5px solid #87CEEB !important;
         box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
-    }
+    }}
     
-    div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
+    div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {{
         color: #1A1A1A !important;
-    }
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -97,8 +134,8 @@ st.markdown("""
 st.write("") 
 st.write("") 
 
-min_possible_date = datetime(1, 1, 1).date()
-max_possible_date = datetime(9999, 12, 31).date()
+min_possible_date = datetime(1900, 1, 1).date() 
+max_possible_date = datetime(2100, 12, 31).date()
 
 st.markdown("**Select an English Date to Convert:**")
 selected_date = st.date_input(
@@ -132,7 +169,7 @@ if submit_button:
 
 st.write("---")
 
-# --- CLEANED NATiVE STREAMLIT PROJECT DETAILS EXPANDER ---
+# --- CLEANED NATIVE STREAMLIT PROJECT DETAILS EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
     st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
     st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
