@@ -35,8 +35,17 @@ st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="📅", l
 st.title("🌅 Telugu Calendar Converter")
 st.write("Convert any English calendar date into traditional Telugu year, month, and tithi details.")
 
-# Date picker input component
-selected_date = st.date_input("Select an English Date:", datetime.today())
+# Set minimum and maximum possible date boundaries to unlock all centuries
+min_possible_date = datetime(1, 1, 1)
+max_possible_date = datetime(9999, 12, 31)
+
+# The updated date picker component with an open date range
+selected_date = st.date_input(
+    "Select an English Date:", 
+    value=datetime.today(),
+    min_value=min_possible_date,
+    max_value=max_possible_date
+)
 
 if st.button("Convert Date", type="primary"):
     jd = get_julian_date(selected_date)
