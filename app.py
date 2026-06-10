@@ -40,7 +40,7 @@ def estimate_lunar_positions(jd, date_obj):
     T = (jd - 2451545.0) / 36525.0
     
     sun_long = (280.46646 + 36000.76983 * T + 0.0003032 * T**2) % 360
-    M_sun = (357.52911 + 35999.05029 * T - 0.0001537 * T**2) % 360
+    M_sun = (357.52911 + 35999.05029 * T - 0.0011537 * T**2) % 360
     sun_apparent_long = (sun_long + 1.914602 * math.sin(math.radians(M_sun)) + 0.019993 * math.sin(math.radians(2 * M_sun))) % 360
 
     moon_long = (218.31644 + 481267.88123 * T - 0.001133 * T**2) % 360
@@ -88,20 +88,28 @@ try:
 except FileNotFoundError:
     background_style = ".stApp { background-color: #FF9933; }"
 
-# Custom CSS styling with background image injected
+# Custom CSS styling with background image injected and absolute input text contrast overrides
 st.markdown(f"""
 <style>
     {background_style}
     
-    html, body, [class*="css"], p, label, h3, .stMarkdown {{
+    html, body, p, label, h3, .stMarkdown {{
         font-family: 'Georgia', 'Times New Roman', serif !important;
         color: #1A1A1A !important;
     }}
     
+    /* Lock structural container background for calendar components */
     div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {{
         background-color: #FFFFFF !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
+    }}
+    
+    /* FORCED CONTRAST: Explicit target for standard text and text layouts inside native form pickers */
+    div[data-baseweb="input"] input, div[data-baseweb="select"] select, input[type="date"] {{
+        color: #1A1A1A !important;
+        -webkit-text-fill-color: #1A1A1A !important; /* Forces system text rendering on iOS Safari/Chrome engine */
+        background-color: #FFFFFF !important;
     }}
     
     /* Input instruction text container styling */
