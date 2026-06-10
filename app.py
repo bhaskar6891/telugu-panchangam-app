@@ -50,39 +50,33 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling injecting a 20% transparent devotional background artwork layer
+# Injection of an explicit HTML container layer to force-render the background photo over Streamlit's framework
+st.markdown("""
+<div style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('https://img.freepik.com/premium-vector/god-ganeshaLine-art-design-vector-illustration_969843-157.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.20;
+    pointer-events: none;
+    z-index: -999;
+"></div>
+""", unsafe_allow_html=True)
+
+# Custom CSS styling managing structural elements
 st.markdown("""
 <style>
-    /* Base configuration for the background orange color */
+    /* Keep the solid app background color base */
     .stApp {
         background-color: #FF9933 !important;
-        position: relative;
     }
     
-    /* Creating a persistent background layer with 20% transparent religious line art motifs */
-    .stApp::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url("https://img.freepik.com/premium-vector/god-ganeshaLine-art-design-vector-illustration_969843-157.jpg");
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        opacity: 0.20; /* Fixed 20% transparency over the orange color */
-        pointer-events: none;
-        z-index: 0;
-    }
-    
-    /* Elevating app contents above the background layer */
-    .stApp > div {
-        position: relative;
-        z-index: 1;
-    }
-    
-    /* Font styles */
+    /* Global typographical assignments */
     html, body, [class*="css"], p, label, h3, .stMarkdown {
         font-family: 'Georgia', 'Times New Roman', serif !important;
         color: #1A1A1A !important;
@@ -158,7 +152,7 @@ if submit_button:
 
 st.write("---")
 
-# --- CLEANED NATIVE STREAMLIT PROJECT DETAILS EXPANDER ---
+# --- CLEANED NATiVE STREAMLIT PROJECT DETAILS EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
     st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
     st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
