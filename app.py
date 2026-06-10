@@ -50,53 +50,56 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Safe single-line string formatting injection to prevent any potential python string compilation errors
-css_styling = (
-    '<style>'
-    '.stApp {'
-    '    background-color: #FF9933 !important;'
-    '    background-image: linear-gradient(rgba(255, 153, 51, 0.82), rgba(255, 153, 51, 0.82)), '
-    '    url("https://raw.githubusercontent.com/Aakash-Rao-V/Internal-Assets/main/hindu_gods_bg_collage.jpg") !important;'
-    '    background-size: cover !important;'
-    '    background-position: center center !important;'
-    '    background-repeat: no-repeat !important;'
-    '    background-attachment: fixed !important;'
-    '}'
-    'html, body, p, label, h3, .stMarkdown, span, div {'
-    '    font-family: "Georgia", "Times New Roman", serif !important;'
-    '    color: #1A1A1A !important;'
-    '}'
-    'div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {'
-    '    background-color: #FFFFFF !important;'
-    '    border-radius: 8px !important;'
-    '    border: 2px solid #87CEEB !important;'
-    '}'
-    'div[data-testid="stMetric"] {'
-    '    background-color: #FFFFFF !important;'
-    '    padding: 15px !important;'
-    '    border-radius: 10px !important;'
-    '    border-left: 5px solid #87CEEB !important;'
-    '    box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;'
-    '}'
-    'div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"] {'
-    '    color: #1A1A1A !important;'
-    '}'
-    '</style>'
-)
-st.markdown(css_styling, unsafe_allow_html=True)
+# Custom CSS styling
+st.markdown("""
+<style>
+    .stApp {
+        background-color: #FF9933;
+    }
+    
+    html, body, [class*="css"], p, label, h3, .stMarkdown {
+        font-family: 'Georgia', 'Times New Roman', serif !important;
+        color: #1A1A1A !important;
+    }
+    
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {
+        background-color: #FFFFFF !important;
+        border-radius: 8px !important;
+        border: 2px solid #87CEEB !important;
+    }
+    
+    div[data-testid="stMetric"] {
+        background-color: #FFFFFF !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        border-left: 5px solid #87CEEB !important;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
+    }
+    
+    div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
+        color: #1A1A1A !important;
+    }
+    
+    /* Custom style for inside the expander to keep things legible */
+    .stDetails {
+        background-color: #FFFFFF !important;
+        border-radius: 10px;
+        padding: 10px;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# Main Dashboard Title block
-st.markdown(
-    '<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">'
-    '<h1 style="color:#1A1A1A !important; font-family:\'Georgia\', serif; margin:0; font-size: 32px; font-weight: bold;">'
-    'ॐ తెలుగు పంచాంగం కన్వర్టర్ ॐ'
-    '</h1>'
-    '<p style="color:#1A1A1A !important; font-size:16px; margin:8px 0 0 0; letter-spacing: 1px; font-weight: bold;">'
-    'Traditional Telugu Panchangam Calendar Converter'
-    '</p>'
-    '</div>', 
-    unsafe_allow_html=True
-)
+# Heading Banner with Sky Blue background
+st.markdown("""
+<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">
+    <h1 style="color:#1A1A1A !important; font-family:'Georgia', serif; margin:0; font-size: 32px; font-weight: bold;">
+        ॐ తెలుగు పంచాంగం కన్వర్టర్ ॐ
+    </h1>
+    <p style="color:#1A1A1A !important; font-size:16px; margin:8px 0 0 0; letter-spacing: 1px; font-weight: bold;">
+        Traditional Telugu Panchangam Calendar Converter
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 st.write("") 
 st.write("") 
@@ -115,7 +118,7 @@ selected_date = st.date_input(
 
 st.write("")
 
-# Centered Button Block
+# Centered Button
 left_col, mid_col, right_col = st.columns([1.3, 1, 1])
 with mid_col:
     submit_button = st.button("Convert Date", type="primary")
@@ -136,24 +139,38 @@ if submit_button:
 
 st.write("---")
 
-# Project Context Expander
+# --- PROJECT DETAILS EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
-    st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
-    st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
-    
-    st.markdown("#### 1. The Science of Vedic Time")
-    st.markdown("- **The Samvatsara Chakra:** Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.")
-    st.markdown("- **Lunar Precision:** Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.")
-    
-    st.markdown("#### 2. Calculation Methodology")
-    st.write("The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:")
-    st.markdown("- Solar/Lunar Longitude Overlaps")
-    st.markdown("- Tithi Indexing via precise 12° incremental phases")
-    st.markdown("- Shaka Era offset mappings")
-    
-    st.markdown("#### 3. Seasonal Search & Cultural Trends")
-    st.markdown("- **Ugadi (New Year):** Peak systemic traffic (95% search/utility load)")
-    st.markdown("- **Sravanam (Monsoon Festivals):** High baseline query metrics for auspicious dates")
-    st.markdown("- **Kartika (Autumn Celebrations):** Continuous evening traffic trends")
-    
-    st.info('"Kaalah Sarvam Labhati" — Time provides everything.')
+    st.markdown("""
+    <div class="stDetails">
+        <h3>📖 Strategic Overview: Telugu Panchangam Digital Converter</h3>
+        <p>This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.</p>
+        
+        <hr>
+        
+        <h4>1. The Science of Vedic Time</h4>
+        <ul>
+            <li><strong>The Samvatsara Chakra:</strong> Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.</li>
+            <li><strong>Lunar Precision:</strong> Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.</li>
+        </ul>
+        
+        <h4>2. Calculation Methodology</h4>
+        <p>The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:</p>
+        <ul>
+            <li>Solar/Lunar Longitude Overlaps</li>
+            <li>Tithi Indexing via precise 12° incremental phases</li>
+            <li>Shaka Era offset mappings</li>
+        </ul>
+        
+        <h4>3. Seasonal Search & Cultural Trends</h4>
+        <ul>
+            <li><strong>Ugadi (New Year):</strong> Peak systemic traffic (95% search/utility load)</li>
+            <li><strong>Sravanam (Monsoon Festivals):</strong> High baseline query metrics for auspicious dates</li>
+            <li><strong>Kartika (Autumn Celebrations):</strong> Continuous evening traffic trends</li>
+        </ul>
+        
+        <blockquote style="border-left: 4px solid #87CEEB; padding-left: 10px; font-style: italic;">
+            "Kaalah Sarvam Labhati" — Time provides everything.
+        </blockquote>
+    </div>
+    """, unsafe_allow_html=True)
