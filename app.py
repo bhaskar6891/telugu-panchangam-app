@@ -50,7 +50,7 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling to set Orange background and customize fonts/cards
+# Custom CSS styling
 st.markdown("""
     <style>
         /* 1. Sets main background to a vibrant orange color */
@@ -64,7 +64,7 @@ st.markdown("""
             color: #1A1A1A !important;
         }
         
-        /* 3. Custom design for output boxes / input labels */
+        /* 3. Custom design for input boxes / input labels */
         div[data-baseweb="input"], div[data-baseweb="select"] {
             background-color: #FFFFFF !important;
             border-radius: 8px !important;
@@ -84,10 +84,37 @@ st.markdown("""
         div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"] {
             color: #002060 !important;
         }
+
+        /* 5. Target the Streamlit button container to center it */
+        div.stButton {
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 6. Makes the button text bold, larger, and styles its appearance */
+        div.stButton > button {
+            font-weight: bold !important;
+            font-size: 18px !important;
+            padding: 10px 30px !important;
+            border-radius: 8px !important;
+            background-color: #002060 !important;
+            color: #FFFFFF !important;
+            border: 2px solid #FFFFFF !important;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover effect for the centered button */
+        div.stButton > button:hover {
+            background-color: #FFFFFF !important;
+            color: #002060 !important;
+            border: 2px solid #002060 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# 5. Decorative Heading Banner with Navy Blue background and "Om" symbols
+# 7. Decorative Heading Banner with Navy Blue background and "Om" symbols
 st.markdown("""
     <div style="background-color:#002060; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">
         <h1 style="color:#FFFFFF; font-family:'Georgia', serif; margin:0; font-size: 32px; font-weight: bold;">
@@ -103,10 +130,10 @@ st.write("")
 st.write("") 
 
 # --- Input Configuration (No Date Restrictions) ---
+st.markdown("**Select an English Date to Convert:**")
 min_possible_date = datetime(1, 1, 1)
 max_possible_date = datetime(9999, 12, 31)
 
-st.markdown("**Select an English Date to Convert:**")
 selected_date = st.date_input(
     label="Select Date",
     label_visibility="collapsed",
@@ -117,8 +144,9 @@ selected_date = st.date_input(
 
 st.write("")
 
-# --- Execution & Layout Logic ---
-if st.button("Convert Date", type="primary"):
+# --- Centered and Bold Action Button ---
+# The CSS rules defined above automatically target this button component
+if st.button("Convert Date"):
     jd = get_julian_date(selected_date)
     samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
     
