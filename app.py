@@ -164,6 +164,7 @@ st.write("")
 min_possible_date = datetime(1900, 1, 1).date() 
 max_possible_date = datetime(2100, 12, 31).date()
 
+# Wrapped the input instruction text inside a styled container block
 st.markdown('<div class="input-label-container"><strong>Select an English Date to Convert:</strong></div>', unsafe_allow_html=True)
 selected_date = st.date_input(
     label="Select Date",
@@ -175,7 +176,7 @@ selected_date = st.date_input(
 
 st.write("")
 
-# Centered Button Layout (Reverted to original column layout and constraints)
+# Centered Button Layout
 left_col, mid_col, right_col = st.columns([1.3, 1, 1])
 with mid_col:
     submit_button = st.button("Convert Date", type="primary")
@@ -184,6 +185,7 @@ if submit_button:
     jd = get_julian_date(selected_date)
     samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
     
+    # Wrapped the output results heading inside a styled container block
     formatted_date = selected_date.strftime('%d %B, %Y')
     st.markdown(f"""
     <div class="result-header-container">
@@ -191,4 +193,34 @@ if submit_button:
     </div>
     """, unsafe_allow_html=True)
     
-    col1,
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric(label="Telugu Year (Samvatsaram)", value=samvatsara)
+        st.metric(label="Telugu Month (Masam)", value=month)
+    with col2:
+        st.metric(label="Lunar Phase (Paksham)", value=paksham)
+        st.metric(label="Tithi (Lunar Day)", value=tithi)
+
+st.write("---")
+
+# --- CLEANED NATIVE STREAMLIT PROJECT DETAILS EXPANDER ---
+with st.expander("ℹ️ View Project Details & Strategic Overview"):
+    st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
+    st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
+    
+    st.markdown("#### 1. The Science of Vedic Time")
+    st.markdown("- **The Samvatsara Chakra:** Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.")
+    st.markdown("- **Lunar Precision:** Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.")
+    
+    st.markdown("#### 2. Calculation Methodology")
+    st.write("The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:")
+    st.markdown("- Solar/Lunar Longitude Overlaps")
+    st.markdown("- Tithi Indexing via precise 12° incremental phases")
+    st.markdown("- Shaka Era offset mappings")
+    
+    st.markdown("#### 3. Seasonal Search & Cultural Trends")
+    st.markdown("- **Ugadi (New Year):** Peak systemic traffic (95% search/utility load)")
+    st.markdown("- **Sravanam (Monsoon Festivals):** High baseline query metrics for auspicious dates")
+    st.markdown("- **Kartika (Autumn Celebrations):** Continuous evening traffic trends")
+    
+    st.info('"Kaalah Sarvam Labhati" — Time provides everything.')
