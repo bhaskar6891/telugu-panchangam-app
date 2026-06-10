@@ -79,13 +79,6 @@ st.markdown("""
     div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
         color: #1A1A1A !important;
     }
-    
-    /* Custom style for inside the expander to keep things legible */
-    .stDetails {
-        background-color: #FFFFFF !important;
-        border-radius: 10px;
-        padding: 10px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -118,7 +111,7 @@ selected_date = st.date_input(
 
 st.write("")
 
-# Centered Button
+# Centered Button Layout
 left_col, mid_col, right_col = st.columns([1.3, 1, 1])
 with mid_col:
     submit_button = st.button("Convert Date", type="primary")
@@ -139,38 +132,24 @@ if submit_button:
 
 st.write("---")
 
-# --- PROJECT DETAILS EXPANDER ---
+# --- CLEANED NATiVE STREAMLIT PROJECT DETAILS EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
-    st.markdown("""
-    <div class="stDetails">
-        <h3>📖 Strategic Overview: Telugu Panchangam Digital Converter</h3>
-        <p>This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.</p>
-        
-        <hr>
-        
-        <h4>1. The Science of Vedic Time</h4>
-        <ul>
-            <li><strong>The Samvatsara Chakra:</strong> Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.</li>
-            <li><strong>Lunar Precision:</strong> Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.</li>
-        </ul>
-        
-        <h4>2. Calculation Methodology</h4>
-        <p>The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:</p>
-        <ul>
-            <li>Solar/Lunar Longitude Overlaps</li>
-            <li>Tithi Indexing via precise 12° incremental phases</li>
-            <li>Shaka Era offset mappings</li>
-        </ul>
-        
-        <h4>3. Seasonal Search & Cultural Trends</h4>
-        <ul>
-            <li><strong>Ugadi (New Year):</strong> Peak systemic traffic (95% search/utility load)</li>
-            <li><strong>Sravanam (Monsoon Festivals):</strong> High baseline query metrics for auspicious dates</li>
-            <li><strong>Kartika (Autumn Celebrations):</strong> Continuous evening traffic trends</li>
-        </ul>
-        
-        <blockquote style="border-left: 4px solid #87CEEB; padding-left: 10px; font-style: italic;">
-            "Kaalah Sarvam Labhati" — Time provides everything.
-        </blockquote>
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
+    st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
+    
+    st.markdown("#### 1. The Science of Vedic Time")
+    st.markdown("- **The Samvatsara Chakra:** Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.")
+    st.markdown("- **Lunar Precision:** Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.")
+    
+    st.markdown("#### 2. Calculation Methodology")
+    st.write("The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:")
+    st.markdown("- Solar/Lunar Longitude Overlaps")
+    st.markdown("- Tithi Indexing via precise 12° incremental phases")
+    st.markdown("- Shaka Era offset mappings")
+    
+    st.markdown("#### 3. Seasonal Search & Cultural Trends")
+    st.markdown("- **Ugadi (New Year):** Peak systemic traffic (95% search/utility load)")
+    st.markdown("- **Sravanam (Monsoon Festivals):** High baseline query metrics for auspicious dates")
+    st.markdown("- **Kartika (Autumn Celebrations):** Continuous evening traffic trends")
+    
+    st.info('"Kaalah Sarvam Labhati" — Time provides everything.')
