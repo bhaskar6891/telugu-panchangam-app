@@ -50,18 +50,18 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling injecting a 20% opacity spiritual silhouette background pattern
+# Custom CSS styling injecting a 20% opacity spiritual wallpaper canvas background
 st.markdown("""
 <style>
-    /* Main container styling mapping background vectors at 0.2 structural opacity */
+    /* Fixed structural overlay handling the 20% transparent Hindu Pantheon art layer */
     .stApp {
         background-color: #FF9933;
         background-image: 
-            radial-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 40px),
-            linear-gradient(rgba(255, 153, 51, 0.8) 0%, rgba(255, 153, 51, 0.8) 100%),
-            url('https://images.unsplash.com/photo-1545128485-c400e7702796?q=80&w=1000&auto=format&fit=crop');
-        background-size: 80px 80px, cover, cover;
-        background-blend-mode: normal, multiply, normal;
+            linear-gradient(rgba(255, 153, 51, 0.80), rgba(255, 153, 51, 0.80)),
+            url('https://raw.githubusercontent.com/Aakash-Rao-V/Internal-Assets/main/hindu_gods_bg_collage.jpg');
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
         background-attachment: fixed;
     }
     
