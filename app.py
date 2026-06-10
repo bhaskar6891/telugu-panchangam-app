@@ -50,62 +50,53 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling injecting a 20% opacity spiritual wallpaper canvas background
-st.markdown("""
-<style>
-    /* Fixed structural overlay handling the 20% transparent Hindu Pantheon art layer */
-    .stApp {
-        background-color: #FF9933;
-        background-image: 
-            linear-gradient(rgba(255, 153, 51, 0.80), rgba(255, 153, 51, 0.80)),
-            url('https://raw.githubusercontent.com/Aakash-Rao-V/Internal-Assets/main/hindu_gods_bg_collage.jpg');
-        background-size: cover;
-        background-position: center top;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-    
-    /* Forces elegant Serif typography across the application */
-    html, body, [class*="css"], p, label, h3, .stMarkdown {
-        font-family: 'Georgia', 'Times New Roman', serif !important;
-        color: #1A1A1A !important;
-        font-weight: 500;
-    }
-    
-    /* Custom design for output boxes / input labels */
-    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {
-        background-color: #FFFFFF !important;
-        border-radius: 8px !important;
-        border: 2px solid #87CEEB !important;
-    }
-    
-    /* Styles metric blocks to contrast nicely against the orange backdrop */
-    div[data-testid="stMetric"] {
-        background-color: #FFFFFF !important;
-        padding: 15px !important;
-        border-radius: 10px !important;
-        border-left: 5px solid #87CEEB !important;
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
-    }
-    
-    /* Ensures metric text remains dark and readable */
-    div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
-        color: #1A1A1A !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Safe single-line string formatting injection to prevent any potential python string compilation errors
+css_styling = (
+    '<style>'
+    '.stApp {'
+    '    background-color: #FF9933 !important;'
+    '    background-image: linear-gradient(rgba(255, 153, 51, 0.82), rgba(255, 153, 51, 0.82)), '
+    '    url("https://raw.githubusercontent.com/Aakash-Rao-V/Internal-Assets/main/hindu_gods_bg_collage.jpg") !important;'
+    '    background-size: cover !important;'
+    '    background-position: center center !important;'
+    '    background-repeat: no-repeat !important;'
+    '    background-attachment: fixed !important;'
+    '}'
+    'html, body, p, label, h3, .stMarkdown, span, div {'
+    '    font-family: "Georgia", "Times New Roman", serif !important;'
+    '    color: #1A1A1A !important;'
+    '}'
+    'div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {'
+    '    background-color: #FFFFFF !important;'
+    '    border-radius: 8px !important;'
+    '    border: 2px solid #87CEEB !important;'
+    '}'
+    'div[data-testid="stMetric"] {'
+    '    background-color: #FFFFFF !important;'
+    '    padding: 15px !important;'
+    '    border-radius: 10px !important;'
+    '    border-left: 5px solid #87CEEB !important;'
+    '    box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;'
+    '}'
+    'div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"] {'
+    '    color: #1A1A1A !important;'
+    '}'
+    '</style>'
+)
+st.markdown(css_styling, unsafe_allow_html=True)
 
-# Heading Banner with Sky Blue background
-st.markdown("""
-<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">
-    <h1 style="color:#1A1A1A !important; font-family:'Georgia', serif; margin:0; font-size: 32px; font-weight: bold;">
-        ॐ తెలుగు పంచాంగం కన్వర్టర్ ॐ
-    </h1>
-    <p style="color:#1A1A1A !important; font-size:16px; margin:8px 0 0 0; letter-spacing: 1px; font-weight: bold;">
-        Traditional Telugu Panchangam Calendar Converter
-    </p>
-</div>
-""", unsafe_allow_html=True)
+# Main Dashboard Title block
+st.markdown(
+    '<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">'
+    '<h1 style="color:#1A1A1A !important; font-family:\'Georgia\', serif; margin:0; font-size: 32px; font-weight: bold;">'
+    'ॐ తెలుగు పంచాంగం కన్వర్టర్ ॐ'
+    '</h1>'
+    '<p style="color:#1A1A1A !important; font-size:16px; margin:8px 0 0 0; letter-spacing: 1px; font-weight: bold;">'
+    'Traditional Telugu Panchangam Calendar Converter'
+    '</p>'
+    '</div>', 
+    unsafe_allow_html=True
+)
 
 st.write("") 
 st.write("") 
@@ -124,7 +115,7 @@ selected_date = st.date_input(
 
 st.write("")
 
-# Centered Button Layout
+# Centered Button Block
 left_col, mid_col, right_col = st.columns([1.3, 1, 1])
 with mid_col:
     submit_button = st.button("Convert Date", type="primary")
@@ -145,7 +136,7 @@ if submit_button:
 
 st.write("---")
 
-# --- CLEANED NATIVE STREAMLIT PROJECT DETAILS EXPANDER ---
+# Project Context Expander
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
     st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
     st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
