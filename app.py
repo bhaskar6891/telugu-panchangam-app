@@ -86,7 +86,6 @@ try:
     }}
     """
 except FileNotFoundError:
-    # Fallback to standard color if image isn't in the same folder
     background_style = ".stApp { background-color: #FF9933; }"
 
 # Custom CSS styling with background image injected
@@ -103,6 +102,34 @@ st.markdown(f"""
         background-color: #FFFFFF !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
+    }}
+    
+    /* Input instruction text container styling */
+    .input-label-container {{
+        background-color: #FFFFFF !important;
+        padding: 8px 15px !important;
+        border-radius: 8px !important;
+        display: inline-block !important;
+        margin-bottom: 5px !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.15) !important;
+        border-left: 4px solid #87CEEB !important;
+    }}
+    
+    /* Result Header container styling */
+    .result-header-container {{
+        background-color: #FFFFFF !important;
+        padding: 12px 20px !important;
+        border-radius: 10px !important;
+        margin-top: 20px !important;
+        margin-bottom: 15px !important;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
+        border-left: 5px solid #87CEEB !important;
+    }}
+    
+    .result-header-container h3 {{
+        margin: 0 !important;
+        padding: 0 !important;
+        font-weight: bold !important;
     }}
     
     div[data-testid="stMetric"] {{
@@ -137,7 +164,8 @@ st.write("")
 min_possible_date = datetime(1900, 1, 1).date() 
 max_possible_date = datetime(2100, 12, 31).date()
 
-st.markdown("**Select an English Date to Convert:**")
+# Wrapped the input instruction text inside a styled container block
+st.markdown('<div class="input-label-container"><strong>Select an English Date to Convert:</strong></div>', unsafe_allow_html=True)
 selected_date = st.date_input(
     label="Select Date",
     label_visibility="collapsed",
@@ -157,7 +185,13 @@ if submit_button:
     jd = get_julian_date(selected_date)
     samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
     
-    st.markdown(f"### 📅 Results for {selected_date.strftime('%d %B, %Y')}")
+    # Wrapped the output results heading inside a styled container block
+    formatted_date = selected_date.strftime('%d %B, %Y')
+    st.markdown(f"""
+    <div class="result-header-container">
+        <h3>📅 Results for {formatted_date}</h3>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
