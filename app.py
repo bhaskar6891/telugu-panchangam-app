@@ -1,5 +1,7 @@
+import base64
 from datetime import datetime
 import math
+import os
 import streamlit as st
 
 # 1. The 60-Year Telugu Samvatsara (Year) Cycle Names
@@ -26,6 +28,7 @@ TELUGU_TITHIS = [
     "Navami", "Dashami", "Ekadashi", "Dvadashi", "Trayodashi", "Chaturdashi", "Amavasya (New Moon)"
 ]
 
+@st.cache_data
 def get_julian_date(date_obj):
     year, month, day = date_obj.year, date_obj.month, date_obj.day
     if month <= 2:
@@ -35,6 +38,7 @@ def get_julian_date(date_obj):
     B = 2 - A + math.floor(A / 4)
     return math.floor(365.25 * (year + 4716)) + math.floor(30.6001 * (month + 1)) + day + B - 1524.5
 
+@st.cache_data
 def estimate_lunar_positions(jd, date_obj):
     d = jd - 2451545.0
     sun_long = (280.466 + 0.9856474 * d) % 360
@@ -45,66 +49,82 @@ def estimate_lunar_positions(jd, date_obj):
     if date_obj.month < 3 or (date_obj.month == 3 and date_obj.day < 20): 
         shaka_year -= 1
     
-    return TELUGU_YEARS[(shaka_year - 1) % 60], TELUGU_MONTHS[(math.floor(sun_long / 30) - 11) % 12], ("Shukla Paksham" if tithi_index < 15 else "Krishna Paksham"), TELUGU_TITHIS[tithi_index]
+    return (
+        TELUGU_YEARS[(shaka_year - 1) % 60], 
+        TELUGU_MONTHS[(math.floor(sun_long / 30) - 11) % 12], 
+        ("Shukla Paksham" if tithi_index < 15 else "Krishna Paksham"), 
+        TELUGU_TITHIS[tithi_index]
+    )
+
+# Function to convert image file to base64 string
+def get_base64_image(image_path):
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    return ""
 
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Injection of an explicit HTML container layer to force-render the background photo over Streamlit's framework
-st.markdown("""
-<div style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: url('https://img.freepik.com/premium-vector/god-ganeshaLine-art-design-vector-illustration_969843-157.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.20;
-    pointer-events: none;
-    z-index: -999;
-"></div>
-""", unsafe_allow_html=True)
+# Load and encode your background image (Ensure 'background.jpg' is in your app directory)
+bg_image_encoded = get_base64_image("background.jpg")
 
-# Custom CSS styling managing structural elements
-st.markdown("""
+# CSS to implement the custom image background and style text for maximum readability
+st.markdown(f"""
 <style>
-    /* Keep the solid app background color base */
-    .stApp {
-        background-color: #FF9933 !important;
-    }
+    /* Set image background with a subtle dark overlay to keep UI elements legible */
+    .stApp {{
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                    url("data:image/jpg;base64,{bg_image_encoded}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
     
-    /* Global typographical assignments */
-    html, body, [class*="css"], p, label, h3, .stMarkdown {
+    /* Global Text Styling: Set font family and switch primary prose to white for readability over the dark image */
+    html, body, p, label, h3, .stMarkdown, span {{
         font-family: 'Georgia', 'Times New Roman', serif !important;
-        color: #1A1A1A !important;
-    }
+        color: #FFFFFF !important;
+    }}
     
-    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {
-        background-color: #FFFFFF !important;
+    /* Input and Calendar component background rules */
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {{
+        background-color: #F8F9FA !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
-    }
+    }}
     
-    div[data-testid="stMetric"] {
+    /* Style inner text fields inside input widgets so user entries remain visible */
+    div[data-baseweb="input"] input {{
+        color: #1A1A1A !important;
+    }}
+    
+    /* Metrics panel configuration: cleanup look with solid white card container */
+    div[data-testid="stMetric"] {{
         background-color: #FFFFFF !important;
         padding: 15px !important;
         border-radius: 10px !important;
         border-left: 5px solid #87CEEB !important;
-        box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
-    }
+        box-shadow: 3px 3px 15px rgba(0,0,0,0.3) !important;
+    }}
     
-    div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
+    /* Target metric elements selectively to enforce dark text inside the white blocks */
+    div[data-testid="stMetricLabel"] > div, div[data-testid="stMetricValue"] > div {{
         color: #1A1A1A !important;
-    }
+    }}
+    
+    /* Clean background alignment inside native Expander UI element */
+    .stExpander {{
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+    }}
 </style>
 """, unsafe_allow_html=True)
 
 # Heading Banner with Sky Blue background
 st.markdown("""
-<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.25);">
+<div style="background-color:#87CEEB; padding:20px; border-radius:12px; text-align:center; box-shadow: 2px 4px 12px rgba(0,0,0,0.35); margin-bottom: 25px;">
     <h1 style="color:#1A1A1A !important; font-family:'Georgia', serif; margin:0; font-size: 32px; font-weight: bold;">
         ॐ తెలుగు పంచాంగం కన్వర్టర్ ॐ
     </h1>
@@ -113,9 +133,6 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
-
-st.write("") 
-st.write("") 
 
 min_possible_date = datetime(1, 1, 1).date()
 max_possible_date = datetime(9999, 12, 31).date()
@@ -129,30 +146,23 @@ selected_date = st.date_input(
     max_value=max_possible_date
 )
 
-st.write("")
+# Execution happens instantly on date change
+jd = get_julian_date(selected_date)
+samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
 
-# Centered Button Layout
-left_col, mid_col, right_col = st.columns([1.3, 1, 1])
-with mid_col:
-    submit_button = st.button("Convert Date", type="primary")
+st.markdown(f"### 📅 Results for {selected_date.strftime('%d %B, %Y')}")
 
-if submit_button:
-    jd = get_julian_date(selected_date)
-    samvatsara, month, paksham, tithi = estimate_lunar_positions(jd, selected_date)
-    
-    st.markdown(f"### 📅 Results for {selected_date.strftime('%d %B, %Y')}")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric(label="Telugu Year (Samvatsaram)", value=samvatsara)
-        st.metric(label="Telugu Month (Masam)", value=month)
-    with col2:
-        st.metric(label="Lunar Phase (Paksham)", value=paksham)
-        st.metric(label="Tithi (Lunar Day)", value=tithi)
+col1, col2 = st.columns(2)
+with col1:
+    st.metric(label="Telugu Year (Samvatsaram)", value=samvatsara)
+    st.metric(label="Telugu Month (Masam)", value=month)
+with col2:
+    st.metric(label="Lunar Phase (Paksham)", value=paksham)
+    st.metric(label="Tithi (Lunar Day)", value=tithi)
 
 st.write("---")
 
-# --- CLEANED NATiVE STREAMLIT PROJECT DETAILS EXPANDER ---
+# --- EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
     st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
     st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
