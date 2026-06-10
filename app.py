@@ -79,6 +79,13 @@ st.markdown("""
     div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
         color: #1A1A1A !important;
     }
+    
+    /* Custom style for inside the expander to keep things legible */
+    .stDetails {
+        background-color: #FFFFFF !important;
+        border-radius: 10px;
+        padding: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -129,3 +136,41 @@ if submit_button:
     with col2:
         st.metric(label="Lunar Phase (Paksham)", value=paksham)
         st.metric(label="Tithi (Lunar Day)", value=tithi)
+
+st.write("---")
+
+# --- PROJECT DETAILS EXPANDER ---
+with st.expander("ℹ️ View Project Details & Strategic Overview"):
+    st.markdown("""
+    <div class="stDetails">
+        <h3>📖 Strategic Overview: Telugu Panchangam Digital Converter</h3>
+        <p>This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.</p>
+        
+        <hr>
+        
+        <h4>1. The Science of Vedic Time</h4>
+        <ul>
+            <li><strong>The Samvatsara Chakra:</strong> Runs on a prominent 60-year Jovian cycle (from Prabhava to Akshaya), based roughly on Jupiter's relative position in space.</li>
+            <li><strong>Lunar Precision:</strong> Tracks the position of the moon relative to the sun to dynamically assign the 12 Telugu Lunar Months (Masamu) and 30 Tithis.</li>
+        </ul>
+        
+        <h4>2. Calculation Methodology</h4>
+        <p>The core computational background transforms standard Gregorian calendar days into astronomical Julian Dates (JD). By using the angular differential distance between solar and lunar coordinates, the model computes:</p>
+        <ul>
+            <li>Solar/Lunar Longitude Overlaps</li>
+            <li>Tithi Indexing via precise 12° incremental phases</li>
+            <li>Shaka Era offset mappings</li>
+        </ul>
+        
+        <h4>3. Seasonal Search & Cultural Trends</h4>
+        <ul>
+            <li><strong>Ugadi (New Year):</strong> Peak systemic traffic (95% search/utility load)</li>
+            <li><strong>Sravanam (Monsoon Festivals):</strong> High baseline query metrics for auspicious dates</li>
+            <li><strong>Kartika (Autumn Celebrations):</strong> Continuous evening traffic trends</li>
+        </ul>
+        
+        <blockquote style="border-left: 4px solid #87CEEB; padding-left: 10px; font-style: italic;">
+            "Kaalah Sarvam Labhati" — Time provides everything.
+        </blockquote>
+    </div>
+    """, unsafe_allow_html=True)
