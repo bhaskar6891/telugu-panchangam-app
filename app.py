@@ -50,24 +50,36 @@ def estimate_lunar_positions(jd, date_obj):
 # --- STREAMLIT USER INTERFACE & DESIGN ---
 st.set_page_config(page_title="Telugu Panchangam Converter", page_icon="🔱", layout="centered")
 
-# Custom CSS styling
+# Custom CSS styling injecting a 20% opacity spiritual silhouette background pattern
 st.markdown("""
 <style>
+    /* Main container styling mapping background vectors at 0.2 structural opacity */
     .stApp {
         background-color: #FF9933;
+        background-image: 
+            radial-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 40px),
+            linear-gradient(rgba(255, 153, 51, 0.8) 0%, rgba(255, 153, 51, 0.8) 100%),
+            url('https://images.unsplash.com/photo-1545128485-c400e7702796?q=80&w=1000&auto=format&fit=crop');
+        background-size: 80px 80px, cover, cover;
+        background-blend-mode: normal, multiply, normal;
+        background-attachment: fixed;
     }
     
+    /* Forces elegant Serif typography across the application */
     html, body, [class*="css"], p, label, h3, .stMarkdown {
         font-family: 'Georgia', 'Times New Roman', serif !important;
         color: #1A1A1A !important;
+        font-weight: 500;
     }
     
+    /* Custom design for output boxes / input labels */
     div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="calendar"] {
         background-color: #FFFFFF !important;
         border-radius: 8px !important;
         border: 2px solid #87CEEB !important;
     }
     
+    /* Styles metric blocks to contrast nicely against the orange backdrop */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF !important;
         padding: 15px !important;
@@ -76,6 +88,7 @@ st.markdown("""
         box-shadow: 3px 3px 10px rgba(0,0,0,0.15) !important;
     }
     
+    /* Ensures metric text remains dark and readable */
     div[data-testid="stMetricLabel"], div[data-testid="stMetricValue"], div[data-testid="stMetric"] * {
         color: #1A1A1A !important;
     }
@@ -132,7 +145,7 @@ if submit_button:
 
 st.write("---")
 
-# --- CLEANED NATiVE STREAMLIT PROJECT DETAILS EXPANDER ---
+# --- CLEANED NATIVE STREAMLIT PROJECT DETAILS EXPANDER ---
 with st.expander("ℹ️ View Project Details & Strategic Overview"):
     st.subheader("📖 Strategic Overview: Telugu Panchangam Digital Converter")
     st.write("This application serves as a bridge between traditional Vedic astronomical time-tracking structures and modern computational software frameworks.")
